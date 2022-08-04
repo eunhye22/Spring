@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 여러개의 Mapper XML 파일이 존재할 때, 각 Mapper XML 파일의 최상위 태그인 
+        namespace 속성의 값은 고유해야 함 (충돌이 없어야 함) -->
+<mapper namespace="mappers.Board2Mapper">
+
+    <!-- Dynamic SQL 저장 -->
+    <select 
+        id="findBoardByBno"
+        resultType="org.zerock.myapp.domain.BoardVO">
+        <!-- 마이바티스 3버전부터는 <![CDATA[]]> 안써도 됨! (문자열로 취급해주는 태그) -->
+        
+            SELECT *
+            FROM tbl_board
+
+            <!-- 검색조건1 : 특정 BNO에 해당하는 게시글 하나 조회 -->
+            WHERE 
+            <if test="bno != null">
+                bno = #{bno}
+            </if>
+    </select>
+
+    <select 
+        id="findBoardByTitle"
+        resultType="org.zerock.myapp.domain.BoardVO">
+
+        SELECT *
+        FROM tbl_board
+
+        <!-- 검색조건2 : 특정 검색어를 포함하고 있는 제목을 가지는 모든 게시글 조회 -->
+        <!-- where태그 안에서 컨텐츠가 생성되면  -->
+        <where>
+            <if test="title != null">
+                title LIKE '%'||#{title}||'%'
+            </if>
+        </where>
+
+    </select>
+
+    <select 
+        id="findBoardsByWriter"
+        resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT *
+        FROM tbl_board
+
+        <trim prefix="WHERE">
+            <if test="writer != null">
+                writer LIKE '%'||#{writer}||'%'
+            </if>
+        </trim>
+    
+    </select>
+
+    <select 
+        id="findBoardsByBnoAndTitle"
+        resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT *
+        FROM tbl_board
+
+        <trim prefix="WHERE" prefixOverrides="AND | OR">
+            <if test="bno != null">
+                bno > #{bno}
+            </if>
+
+            <if test="title != null">
+                AND title LIKE '%'||#{title}||'%'
+            </if>
+        </trim>
+
+    </select>
+
+    <select 
+        id="findBoardsByBnoAndTitle2"
+        resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT *
+        FROM tbl_board
+
+        <where>
+            <if test="bno != null">
+                bno > #{bno}
+            </if>
+
+            <if test="title != null">
+                AND title LIKE '%'||#{title}||'%'
+            </if>
+        </where>
+
+    </select>
+
+</mapper>
