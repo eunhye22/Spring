@@ -8,6 +8,12 @@
         namespace 속성의 값은 고유해야 함 (충돌이 없어야 함) -->
 <mapper namespace="mappers.Board2Mapper">
 
+    <!-- 반복되는 sql문장 저장하고 필요할 때 <include>태그로 사용 -->
+    <sql id="commonSQL">
+        SELECT *
+        FROM tbl_board
+    </sql>
+
     <!-- Dynamic SQL 저장 -->
     <select 
         id="findBoardByBno"
@@ -89,6 +95,48 @@
             </if>
         </where>
 
+    </select>
+
+    <select 
+        id="findBoardsByBnoOrTitle"
+        resultType="org.zerock.myapp.domain.BoardVO">
+        SELECT *
+        FROM tbl_board
+
+        <where>
+            <choose>
+                <when test="bno != null">
+                    bno > #{bno}
+                </when>
+
+                <when test="itle != null">
+                    OR title LIKE '%'||#{title}||'%'
+                </when>
+
+                <otherwise>
+                    bno > 0 
+                </otherwise>
+
+            </choose>
+
+        </where>
+    </select>
+
+    <select 
+        id="findBoardsByBnos"
+        resultType="org.zerock.myapp.domain.BoardVO">
+
+        <include refid="commonSQL" />
+
+        <!-- 여러개의 BNO와 일치하는 게시글 추출을 위한 조건식 구성 -->
+        <where>
+            <!-- bno IN ( 1, 2, 3, 4, 5 ) -->
+            bno IN
+            <foreach collection="list" open="(" close=")" index="idx" item="bno" separator=",">
+                #{bno}
+            </foreach>
+        </where>
+    
     </select>
 
 </mapper>

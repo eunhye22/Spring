@@ -3,6 +3,7 @@ package org.zerock.myapp.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Timeout;
 import org.zerock.myapp.domain.BoardVO;
 
 import lombok.Cleanup;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -153,11 +155,11 @@ public class DynamicSQLTests {
 			log.info("\t+ board: {}", board);
 			
 		}// try-resources-with
-	}//findBoardsByWriter
+	}//findBoardsByBnoAndTitle
 	
 	@Test
 	@Order(5)
-	@DisplayName("4. testFindBoardsByBnoAndTitle2")
+	@DisplayName("5. testFindBoardsByBnoAndTitle2")
 	@Timeout(value=30, unit=TimeUnit.SECONDS)
 	void testFindBoardsByBnoAndTitle2() {
 		log.trace("testFindBoardsByBnoAndTitle2() invoked.");
@@ -180,6 +182,78 @@ public class DynamicSQLTests {
 			log.info("\t+ board: {}", board);
 			
 		}// try-resources-with
-	}//findBoardsByWriter
+	}//findBoardsByBnoAndTitle2
+	
+	@Test
+	@Order(6)
+	@DisplayName("6. testFindBoardsByBnoOrTitle")
+	@Timeout(value=30, unit=TimeUnit.SECONDS)
+	void testFindBoardsByBnoOrTitle() {
+		log.trace("testFindBoardsByBnoOrTitle() invoked.");
+		
+		SqlSession sqlSession = this.sqlSessionFactory.openSession();
+		
+		try (sqlSession) {
+			
+			String namespace = "mappers.Board2Mapper";	
+			String id = "findBoardsByBnoOrTitle";			
+			
+			String sql = namespace + "." + id;
+			
+			
+			// ** SQL 문장의 바인드 변수에 전달할 값을 가지는 가바빈즈 클래스 생성
+			@Data
+			class BindArguments {	// Called 'Local Class'
+				private Integer bno;
+				private String title;
+				
+//				public Integer getBno() { return bno; }
+//				public void setBno(Integer bno) { this.bno = bno; }
+//				public String getTitle() { return title; }
+//
+//				public void setTitle(String title) { this.title = title; }
+				
+			}//end class
+			
+			BindArguments args = new BindArguments();
+//			args.setBno(100);
+			args.setTitle("3");
+			
+			List<BoardVO> list = sqlSession.<BoardVO>selectList(sql, args);
+			
+			Objects.requireNonNull(list);
+			list.forEach(log::info);
+//			log.info("\t+ board: {}", list);
+			
+		}// try-resources-with
+	
+	}//findBoardsByBnoOrTitle
+	
+	@Test
+	@Order(7)
+	@DisplayName("7. testFindBoardsByBnos")
+	@Timeout(value=30, unit=TimeUnit.SECONDS)
+	void testFindBoardsByBnos() {
+		log.trace("testFindBoardsByBnos() invoked.");
+		
+		SqlSession sqlSession = this.sqlSessionFactory.openSession();
+		
+		try (sqlSession) {
+			
+			String namespace = "mappers.Board2Mapper";	
+			String id = "findBoardsByBnos";			
+			
+			String sql = namespace + "." + id;
+			
+			// List 컬렉션을 만들고, 이 안에 여러개의 BNO값 저장하여 전달
+			List<Integer> bnos = Arrays.asList(1,2,3,4,5);
+			
+			List<BoardVO> board = sqlSession.<BoardVO>selectList(sql, bnos);
+			
+			Objects.requireNonNull(board);
+			log.info("\t+ board: {}", board);
+			
+		}// try-resources-with
+	}//findBoardsByBnos
 	
 } // end class
