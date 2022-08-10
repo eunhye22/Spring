@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+
+	<!-- <context:component-scan base-package="org.zerock.myapp.domain" /> -->
+	<!-- <context:component-scan base-package="org.zerock.myapp.car" /> -->
+
+	<bean id="chef" name="choonsik1" class="org.zerock.myapp.domain.Chef" />
+	<bean id="hotel" name="choonsik2" class="org.zerock.myapp.domain.Hotel" />
+	<bean id="restaurant" name="choonsik3" class="org.zerock.myapp.domain.Restaurant" />
+
+	<bean id="avanteCar" name="choonsik4" class="org.zerock.myapp.car.AvanteCar" />
+	<bean id="handle" name="choonsik5" class="org.zerock.myapp.car.Handle" />
+	<bean id="engine" name="choonsik6" class="org.zerock.myapp.car.Engine" />
+	<bean id="tire" name="choonsik7" class="org.zerock.myapp.car.Tire" />
+
+
+</beans>
